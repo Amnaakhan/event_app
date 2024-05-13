@@ -1,3 +1,4 @@
+import 'package:enentapp/Screens/controller/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -7,13 +8,19 @@ import 'package:enentapp/Screens/Auth/reset_password.dart';
 
 
 class OTPScreen extends StatefulWidget {
-  const OTPScreen({super.key});
+  // final String email;
+  //
+  // const OTPScreen({super.key, required this.email});
 
   @override
   State<OTPScreen> createState() => _OTPScreenState();
 }
 
 class _OTPScreenState extends State<OTPScreen> {
+  final TextEditingController verificationController = TextEditingController();
+
+  AuthController authController = Get.put(AuthController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,7 +79,7 @@ body: Padding(
         animationDuration: Duration(milliseconds: 300),
         backgroundColor: Colors.transparent,
         enableActiveFill: true,
-        // controller: verificationController,
+        controller: verificationController,
         onCompleted: (v) {
           print("Completed");
         },
@@ -88,53 +95,67 @@ body: Padding(
       ),
       SizedBox(height: 4.h,),
 
-  InkWell(
-    onTap: (){
-      Get.to(ResetPassword(),transition: Transition.rightToLeft);
-    },
-    child: Align(
-        alignment: Alignment.center,
-        child: Container(
-          height: 7.h,
-          width: 70.w,
-          decoration: BoxDecoration(
-            color: Color.fromRGBO(86, 105, 255, 1),
-            boxShadow: [
-              BoxShadow(
-                color: Color.fromRGBO(11, 126, 201, 0.25),
-                blurRadius: 25, // soften the shadow
-                spreadRadius: 0, //extend the shadow
+  Obx(()=> authController.isLoading.value?Center(child: CircularProgressIndicator(),):
+    InkWell(
+      onTap: (){
+        if (verificationController.text.isEmpty) {
+          Get.snackbar("Error", "Please Enter your code",
+              backgroundColor:
+              Color.fromRGBO(61, 86, 240, 1),
+              snackPosition: SnackPosition.BOTTOM,
+              colorText: Colors.white,
 
-              )
-            ],
-            borderRadius: BorderRadiusDirectional.all(Radius.circular(10)),
-          ),
-          child: Stack(
+              margin: EdgeInsets.only(
+                  bottom: 15.h, left: 5.w, right: 5.w));
+        } else{
+          authController.verify_email();
 
-            children: [
+        }
+      },
+      child: Align(
+          alignment: Alignment.center,
+          child: Container(
+            height: 7.h,
+            width: 70.w,
+            decoration: BoxDecoration(
+              color: Color.fromRGBO(86, 105, 255, 1),
+              boxShadow: [
+                BoxShadow(
+                  color: Color.fromRGBO(11, 126, 201, 0.25),
+                  blurRadius: 25, // soften the shadow
+                  spreadRadius: 0, //extend the shadow
+
+                )
+              ],
+              borderRadius: BorderRadiusDirectional.all(Radius.circular(10)),
+            ),
+            child: Stack(
+
+              children: [
 
 
-              Center(
-                child: Text("Continue",
-                  style: GoogleFonts.poppins(fontWeight: FontWeight.w400,
-                      color:  Colors.white,fontSize: 13.sp),),
-              ),
-
-              Positioned(
-                right: 3.w,
-                top: 1.5.h,
-                child: Container(height: 4.h,width: 4.h,
-                  decoration: BoxDecoration(
-                      color: Color.fromRGBO(61, 86, 240, 1),
-                      shape: BoxShape.circle
-                  ),
-                  child: Icon(Icons.arrow_forward,color: Colors.white,),
+                Center(
+                  child: Text("Continue",
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.w400,
+                        color:  Colors.white,fontSize: 13.sp),),
                 ),
-              )
-            ],
+
+                Positioned(
+                  right: 3.w,
+                  top: 1.5.h,
+                  child: Container(height: 4.h,width: 4.h,
+                    decoration: BoxDecoration(
+                        color: Color.fromRGBO(61, 86, 240, 1),
+                        shape: BoxShape.circle
+                    ),
+                    child: Icon(Icons.arrow_forward,color: Colors.white,),
+                  ),
+                )
+              ],
+            ),
           ),
-        ),
-      ),),
+        ),),
+  ),
       SizedBox(height: 4.h,),
 
       Align(

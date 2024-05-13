@@ -4,7 +4,7 @@ import 'package:sizer/sizer.dart';
 
 class InputText extends StatelessWidget {
   final String placeholder;
-  final IconData? icon;
+  final IconButton? icon;
   final TextEditingController controller;
   final bool password;
   final Function(String)? onChanged;
@@ -43,7 +43,7 @@ class InputText extends StatelessWidget {
           filled: true,
           hintText: placeholder,
           prefixIcon: image,
-          suffixIcon: Icon(icon,color: Color.fromRGBO(128, 122, 122, 1),),
+          suffixIcon:icon,
 
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
@@ -80,7 +80,7 @@ class InputText extends StatelessWidget {
         ),
         cursorColor: Colors.black,
         style: GoogleFonts.montserrat(
-          color: Theme.of(context).primaryColorLight,
+          color: Colors.black,
           fontSize: 14,
         ),
       ),

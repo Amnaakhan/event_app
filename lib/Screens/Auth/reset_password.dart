@@ -1,4 +1,7 @@
 import 'package:enentapp/Screens/Components/input_text.dart';
+import 'package:enentapp/Screens/Home/event_details.dart';
+import 'package:enentapp/Screens/controller/auth_controller.dart';
+import 'package:get/get.dart';
 
 import 'package:sizer/sizer.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +15,11 @@ class ResetPassword extends StatefulWidget {
 }
 
 class _ResetPasswordState extends State<ResetPassword> {
-  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passController = TextEditingController();
+
+  AuthController authController = Get.put(AuthController());
+  bool _passwordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -42,50 +49,93 @@ class _ResetPasswordState extends State<ResetPassword> {
                 ),),
               ),
               SizedBox(height: 4.h,),
-              InputText(placeholder: 'abc@email.com', controller: nameController,
+              InputText(placeholder: 'abc@email.com', controller: emailController,
                 image: Image.asset('assets/images/mail.png',height: 2.h,),),
+              SizedBox(height: 2.h,),
+
+              InputText(placeholder: 'Your password', controller: passController,
+                password: !_passwordVisible,
+                icon: IconButton(
+                  icon: Icon(
+                    _passwordVisible
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _passwordVisible = !_passwordVisible;
+                    });
+                  },
+                ),
+                image: Image.asset('assets/images/lock.png',height: 2.h,),),
               SizedBox(height: 4.h,),
 
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                  height: 7.h,
-                  width: 70.w,
-                  decoration: BoxDecoration(
-                    color: Color.fromRGBO(86, 105, 255, 1),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color.fromRGBO(11, 126, 201, 0.25),
-                        blurRadius: 25, // soften the shadow
-                        spreadRadius: 0, //extend the shadow
+              Obx(()=> authController.isLoading.value?Center(child: CircularProgressIndicator(),):
+                 Align(
+                  alignment: Alignment.center,
+                  child: InkWell(
+                    onTap: (){
+                      if (emailController.text.isEmpty) {
+                        Get.snackbar("Error", "Please Enter your email",
+                            backgroundColor:
+                            Color.fromRGBO(61, 86, 240, 1),
+                            snackPosition: SnackPosition.BOTTOM,
+                            colorText: Colors.white,
 
-                      )
-                    ],
-                    borderRadius: BorderRadiusDirectional.all(Radius.circular(10)),
-                  ),
-                  child: Stack(
+                            margin: EdgeInsets.only(
+                                bottom: 15.h, left: 5.w, right: 5.w));
+                      } else if(passController.text.isEmpty){
+                        Get.snackbar("Error", "Please Enter your password",
+                            backgroundColor:
+                            Color.fromRGBO(61, 86, 240, 1),
+                            snackPosition: SnackPosition.BOTTOM,
+                            colorText: Colors.white,
 
-                    children: [
+                            margin: EdgeInsets.only(
+                                bottom: 15.h, left: 5.w, right: 5.w));
+                      }else{
+                      authController.reset_password(pass: passController.text, email: emailController.text);}
+                    },
+                    child: Container(
+                      height: 7.h,
+                      width: 70.w,
+                      decoration: BoxDecoration(
+                        color: Color.fromRGBO(86, 105, 255, 1),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color.fromRGBO(11, 126, 201, 0.25),
+                            blurRadius: 25, // soften the shadow
+                            spreadRadius: 0, //extend the shadow
 
-
-                      Center(
-                        child: Text("Send",
-                          style: GoogleFonts.poppins(fontWeight: FontWeight.w400,
-                              color:  Colors.white,fontSize: 13.sp),),
+                          )
+                        ],
+                        borderRadius: BorderRadiusDirectional.all(Radius.circular(10)),
                       ),
+                      child: Stack(
 
-                      Positioned(
-                        right: 3.w,
-                        top: 1.5.h,
-                        child: Container(height: 4.h,width: 4.h,
-                          decoration: BoxDecoration(
-                              color: Color.fromRGBO(61, 86, 240, 1),
-                              shape: BoxShape.circle
+                        children: [
+
+
+                          Center(
+                            child: Text("Send",
+                              style: GoogleFonts.poppins(fontWeight: FontWeight.w400,
+                                  color:  Colors.white,fontSize: 13.sp),),
                           ),
-                          child: Icon(Icons.arrow_forward,color: Colors.white,),
-                        ),
-                      )
-                    ],
+
+                          Positioned(
+                            right: 3.w,
+                            top: 1.5.h,
+                            child: Container(height: 4.h,width: 4.h,
+                              decoration: BoxDecoration(
+                                  color: Color.fromRGBO(61, 86, 240, 1),
+                                  shape: BoxShape.circle
+                              ),
+                              child: Icon(Icons.arrow_forward,color: Colors.white,),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
