@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
       builder: (context, orientation, deviceType) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
-          home: LoginScreen(),
+          home: CreateEvent(),
         );
       },
     );
